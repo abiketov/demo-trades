@@ -1,0 +1,88 @@
+
+d:\HSBC\demo.trades>C:\tools\spark\bin\spark-submit2 --master local --class com.demo.analytics.Trades  --jars ./config-1.3.3.jar ./trades.analytics/target/trades.analytics-1.0-SNAPSHOT.jar 
++--------------------+-------+--------------+------+
+|             tradeId|product|          date|amount|
++--------------------+-------+--------------+------+
+|eaba3c62-48d8-4e4...|    FWD| 2905206:09:01| 10.56|
+|eaba3c62-48d8-4e4...|    FWD| 2905206:10:53| 11.23|
+|eaba3c62-48d8-4e4...|    FWD| 2905206:15:40|  23.2|
+|08beb57e-957c-408...|   SPOT| 2905206:09:04| 11.56|
+|08beb57e-957c-408...|    FWD| 2905206:11:45| 11.23|
+|08beb57e-957c-408...|   SPOT| 2905206:12:30|  23.2|
+|a6f3d6b7-40d3-4a4...|    FWD| 2905206:08:01| 10.56|
+|a6f3d6b7-40d3-4a4...|   SPOT| 2905206:12:30| 11.23|
+|a6f3d6b7-40d3-4a4...|    FWD| 2905206:13:20|  23.2|
+|a6f3d6b7-40d3-4a4...|    FWD|2905206:14:340|  56.0|
+|d50b9b48-4047-430...|    FWD| 2905206:08:01| 10.56|
+|d50b9b48-4047-430...|   SPOT| 2905206:12:30| 11.23|
+|d50b9b48-4047-430...|    FWD| 2905206:13:20|  23.2|
++--------------------+-------+--------------+------+
+
+What are the total number of events?
++--------------+
+|count(product)|
++--------------+
+|            13|
++--------------+
+
+What are the distinct product types?
++-------+
+|product|
++-------+
+|    FWD|
+|   SPOT|
++-------+
+
+For each product type, what is the total amount?
++-------+-----------+
+|product|sum(amount)|
++-------+-----------+
+|    FWD|     179.74|
+|   SPOT|      57.22|
++-------+-----------+
+
+Can we see the events ordered by the time they occurred?
++--------------------+-------+--------------+------+
+|             tradeId|product|          date|amount|
++--------------------+-------+--------------+------+
+|d50b9b48-4047-430...|    FWD| 2905206:08:01| 10.56|
+|a6f3d6b7-40d3-4a4...|    FWD| 2905206:08:01| 10.56|
+|eaba3c62-48d8-4e4...|    FWD| 2905206:09:01| 10.56|
+|08beb57e-957c-408...|   SPOT| 2905206:09:04| 11.56|
+|eaba3c62-48d8-4e4...|    FWD| 2905206:10:53| 11.23|
+|08beb57e-957c-408...|    FWD| 2905206:11:45| 11.23|
+|d50b9b48-4047-430...|   SPOT| 2905206:12:30| 11.23|
+|08beb57e-957c-408...|   SPOT| 2905206:12:30|  23.2|
+|a6f3d6b7-40d3-4a4...|   SPOT| 2905206:12:30| 11.23|
+|d50b9b48-4047-430...|    FWD| 2905206:13:20|  23.2|
+|a6f3d6b7-40d3-4a4...|    FWD| 2905206:13:20|  23.2|
+|a6f3d6b7-40d3-4a4...|    FWD|2905206:14:340|  56.0|
+|eaba3c62-48d8-4e4...|    FWD| 2905206:15:40|  23.2|
++--------------------+-------+--------------+------+
+
+How do we get the minimum amount for each product type?
+How do we get the maximum amount for each product type?
++-------+-----------+-----------+
+|product|min(amount)|max(amount)|
++-------+-----------+-----------+
+|    FWD|      10.56|       56.0|
+|   SPOT|      11.23|       23.2|
++-------+-----------+-----------+
+
+How do we get the total amount for each trade, and the max/min across trades?
++--------------------+------+
+|             tradeId| total|
++--------------------+------+
+|d50b9b48-4047-430...| 44.99|
+|eaba3c62-48d8-4e4...| 44.99|
+|a6f3d6b7-40d3-4a4...|100.99|
+|08beb57e-957c-408...| 45.99|
++--------------------+------+
+
++---------+---------+
+|max total|min total|
++---------+---------+
+|   100.99|    44.99|
++---------+---------+
+
+Data needs to be saved into Hive for other consumers.
